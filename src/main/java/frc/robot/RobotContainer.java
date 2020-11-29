@@ -8,8 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.commands.DriveWithJoystick;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -20,17 +26,33 @@ import edu.wpi.first.wpilibj2.command.Command;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+ private SpeedController leftUp, leftDown, rightUp, rightDown;
+ private SpeedControllerGroup left, right;
+ private DifferentialDrive drive;
+ private static DriveTrain driveTrain;
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  private static Joystick joy;
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    leftUp = new SteelTalonsController(Constants.LEFT_UP_PORT, false, 0);
+    leftDown = new SteelTalonsController(Constants.LEFT_DOWN_PORT, false, 0);
+    rightUp = new SteelTalonsController(Constants.RIGHT_UP_PORT, false, 0);
+    rightDown = new SteelTalonsController(Constants.RIGHT_DOWN_PORT, false, 0);
+
+    left = new SpeedControllerGroup(leftUp, leftDown);
+    right = new SpeedControllerGroup(rightUp, rightDown);
+
+    drive  = new DifferentialDrive(left, right);
+
+    driveTrain = new DriveTrain(left, right, drive);
+    driveTrain.setDefaultCommand(new DriveWithJoystick());
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -41,7 +63,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
+  private void configureButtonBindings() 
+  {
+    joy = new Joystick(0);
   }
 
 
@@ -52,6 +76,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return null;
+  }
+
+  public static DriveTrain getDriveTrain() {
+    return driveTrain;
+  }
+
+  public static Joystick getJoy()
+  {
+    return joy;
   }
 }
