@@ -6,8 +6,8 @@ public class MoveHatch extends CommandBase {
  public void buttonbind(boolean ifPressed) {
      public Hatch hatch;
 
-     public void Hatchmove() {
-         hatch.Hatchmove();
+     public void execute() {
+         hatch.move();
      }
     }
      public boolean isFinished() {

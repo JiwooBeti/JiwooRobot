@@ -4,36 +4,42 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpi.first.frc.team5427.util.Config;
 
 public class Arm extends SubsystemBase {
     public SpeedController armcontroller;
     public Potentiometer armpotent;
     public Button armbuttonup;
-    public Button armbuttondown = - armbuttonup;
+    public Button armbuttondown;
     private double speed;
-    
-    public void armpotentchecker() {
-        if armpotent < 0 {
-    armpotent = 0;
-    }
-    if armpotent > 0 {
+    private double TopLimit;
+    private double BottomLimit;
+    public boolean armpotentchecker(double potentiometervalue) {
+        if (potentiometervalue < BottomLimit) {
+            return false;
+        } else if (potentiometervalue > TopLimit) {
         //change the values of < 0 and > 0 to the correct limits
         //I'm not sure what they are as of now. 
-        armpotent = 0;
-    }
+        return false;
+        } else {
+            return true;
+        }
 }
-    private Joystick stickofjoy;
-    private double move(double SpeedOfTheArm) {
+    public Joystick stickofjoy;
+    public double MoveArm(double armspeed) {
         
-        SpeedOfTheArm = -SpeedOfTheArm;
-        return SpeedOfTheArm;
+        return armspeed;
     }
-    private double stop(double SpeedOfTheArm) {
-        SpeedOfTheArm = 0;
-        return SpeedOfTheArm;
+    private void stop(double armspeed) {
+        armspeed = 0;
     }
-    private boolean isFinished() {
-
+    private boolean isFinished(double armspeed) {
+        if (armspeed == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 
